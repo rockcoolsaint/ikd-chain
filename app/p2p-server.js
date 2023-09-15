@@ -1,6 +1,6 @@
 const websocket = require('ws');
 
-const P2P_PORT = process.env.P2P || 5001;
+const P2P_PORT = process.env.P2P_PORT || 5001;
 const peers = process.env.PEERS ? process.env.PEERS.split('.') : [];
 
 class P2pServer {
@@ -12,7 +12,18 @@ class P2pServer {
   listen() {
     const server = new websocket.Server({ port: P2P_PORT });
     server.on('connection', socket => this.connectSocket(socket));
+
+    this.connectToPeers();
+
     console.log(`Listening for peer-to-peer connections on: ${P2P_PORT}`)
+  }
+
+  connectToPeers() {
+    peers.forEach(peer => {
+      const socket = new websocket(peer);
+
+      socket.on('open', () => this.connectSocket(socket));
+    });
   }
 
   connectSocket(socket) {
@@ -21,3 +32,4 @@ class P2pServer {
   }
 }
 
+module.exports = P2pServer;
