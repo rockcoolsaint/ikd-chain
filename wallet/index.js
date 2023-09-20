@@ -19,7 +19,7 @@ class Wallet {
     return this.keyPair.sign(dataHash);
   }
 
-  createTransaction(receipient, amount, transactionPool) {
+  createTransaction(recipient, amount, transactionPool) {
     if (amount > this.balance) {
       console.log(`Amount: ${amount} exceeds current balance: ${this.balance}`);
       return;
@@ -28,9 +28,9 @@ class Wallet {
     let transaction = transactionPool.existingTransaction(this.publicKey);
 
     if (transaction) {
-      transaction.update(this, receipient, amount);
+      transaction.update(this, recipient, amount);
     } else {
-      transaction = Transaction.newTransaction(this, receipient, amount);
+      transaction = Transaction.newTransaction(this, recipient, amount);
       transactionPool.updateOrAddTransaction(transaction);
     }
 
